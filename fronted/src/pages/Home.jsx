@@ -4,11 +4,7 @@ import getAllProducts from "../services/info.service";
 import { useEffect, useState } from "react";
 function Home() {
   const [info, setInfo] = useState([]);
-  const [infoSearch, setInfoSearch] = useState([]);
-  // function getSearchInfo (searchInfo){
-  //   if
-
-  // }
+  const [searchValue, setSearchValue] = useState("");
   async function getInfo() {
     const response = await getAllProducts();
     const data = await response.json();
@@ -18,13 +14,19 @@ function Home() {
     getInfo();
   }, []);
 
+  const filteredInfo = searchValue
+    ? info.filter((information) =>
+        information.title.toLowerCase().includes(searchValue.toLowerCase())
+      )
+    : info;
+
   return (
     <>
       <header>
-        <Navbar />
+        <Navbar setSearchValue={setSearchValue} />
       </header>
       <section className="my-12 mx-6 flex flex-wrap gap-5 items-start  justify-center">
-        {info.map((information) => (
+        {filteredInfo.map((information) => (
           <div key={information.id}>
             <Card
               title={information.title}
@@ -37,4 +39,5 @@ function Home() {
     </>
   );
 }
+
 export default Home;
