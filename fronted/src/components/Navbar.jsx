@@ -13,7 +13,7 @@ function Navbar({ setSearchValue }) {
           className="size-8 rounded-full mx-4"
           src="https://img.freepik.com/vector-premium/paquete-entrega-abierto-icono-caja-carton-vacia-aislado-sobre-fondo-blanco_53562-14296.jpg"
         ></img>
-        <a className="mx-4 cursor-pointer" onClick={() => navigate("/")}>
+        <a className="mx-4 cursor-pointer" onClick={() => navigate("/home")}>
           Home
         </a>
         <a className="cursor-pointer" onClick={() => navigate("/management")}>Gestión</a>

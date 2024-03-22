@@ -12,6 +12,8 @@ function Card({
   const [status, setStatus] = useState(propStatus);
   const [description, setDescription] = useState(propDescription);
   const [editing, setEditing] = useState(false);
+  const userDataString = localStorage.getItem("userData");
+  const userData = JSON.parse(userDataString);
 
   const handleProductDelete = () => {
     IdDelete(_id);
@@ -71,12 +73,17 @@ function Card({
             <p className="m-2">{description}</p>
             <p>{status}</p>
             <div className="w-full flex justify-between">
-              <button className="size-8" onClick={handleProductDelete}>
-                <img src="public/icons/delete-svgrepo-com.svg" alt="delete" />
-              </button>
-              <button className="size-8" onClick={handleProductEdit}>
-                <img src="public/icons/edit-3-svgrepo-com.svg" alt="edit" />
-              </button>
+              {userData && userData.rol && (
+                <button className="size-8" onClick={handleProductDelete}>
+                  <img src="public/icons/delete-svgrepo-com.svg" alt="delete" />
+                </button>
+              )}
+
+              {userData && userData.rol && (
+                <button className="size-8" onClick={handleProductEdit}>
+                  <img src="public/icons/edit-3-svgrepo-com.svg" alt="edit" />
+                </button>
+              )}
             </div>
           </>
         )}

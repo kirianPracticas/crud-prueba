@@ -1,103 +1,44 @@
 import Navbar from "../components/Navbar";
-import Card from "../components/Card";
-import productsService from "../services/products.service";
+import userProductService from "../services/userProducts.service";
 import { useEffect, useState } from "react";
-import Form from "../components/Form.jsx";
+import StateCard from "../components/StateCard";
 
 function Management() {
-  const [info, setInfo] = useState([]);
   const [searchValue, setSearchValue] = useState("");
-  const [idDelete, setIdDelete] = useState(null);
-  const [editinProduct, setEditinProduct] = useState({});
-  const [visibility, setVisibility] = useState(false);
-  const addButtonLabel = visibility ? "Cerrar formulario" : "Abrir formulario";
 
-  async function addProduct(product) {
-    if (product) {
-      const response = await productsService.addProduct(product);
-      getInfo();
+  const [request, setRequest] = useState([]);
+  async function getRequest() {
+    try {
+      const response = await userProductService.getAllUserProducts();
+      setRequest(response);
+      console.log(response);
+      
+    } catch (error) {
+      console.log(error);
     }
+    
   }
 
-  async function deleteProduct(idToDelete) {
-    if (idToDelete) {
-      const response = await productsService.deleteOneProduct(idToDelete);
-      getInfo();
-    }
-  }
 
-  async function editProduct(editinProduct) {
-    const data = {
-      title: editinProduct.title,
-      description: editinProduct.description,
-      status: editinProduct.status,
-    };
-    const id = editinProduct.id;
-    if (data && id) {
-      const response = await productsService.editProduct(id, data);
-      getInfo();
-    }
-  }
-
-  async function getInfo() {
-    const response = await productsService.getAllProducts();
-    setInfo(response);
-  }
 
   useEffect(() => {
-    getInfo();
+    getRequest();
   }, []);
 
-  const handleDelete = (_id) => {
-    setIdDelete(_id);
-  };
 
-  const handleEdit = (editingProduct) => {
-    setEditinProduct(editingProduct);
-  };
-
-  const handleSave = (product) => {
-    addProduct(product);
-  };
-
-  const handleChangeFormVisibility = () => {
-    setVisibility(!visibility);
-  };
-
-  useEffect(() => {
-    deleteProduct(idDelete);
-  }, [idDelete]);
-
-  useEffect(() => {
-    editProduct(editinProduct);
-  }, [editinProduct]);
-
-  const filteredInfo = searchValue
-    ? info.filter((information) =>
-        information.title.toLowerCase().includes(searchValue.toLowerCase())
-      )
-    : info;
   return (
     <>
       <header>
         <Navbar setSearchValue={setSearchValue} />
       </header>
       <section>
-        <Form setVisible={visibility} savedProduct={handleSave} />
-      </section>
-      <button className="w-full bg-gray-400"  onClick={handleChangeFormVisibility}>{addButtonLabel}</button>
-      <section className="my-12 mx-6 flex flex-wrap gap-5 items-start justify-center">
-        {filteredInfo.map((information) => (
-          <div key={information._id}>
-            <Card
-              title={information.title}
-              description={information.description}
-              status={information.status}
-              _id={information._id}
-              IdDelete={handleDelete}
-              editinProduct={handleEdit}
-            />
-          </div>
+        {request.map((requestInfo) => (
+          <StateCard
+          key={requestInfo._id} // Asegúrate de proporcionar una clave única para cada componente en la lista
+          userName={requestInfo.user_id.username} // Accede al campo username del objeto user_id
+          productName={requestInfo.product_id.title} // Accede al campo title del objeto product_id
+          quantity={requestInfo.quantity}
+          />
         ))}
       </section>
     </>
